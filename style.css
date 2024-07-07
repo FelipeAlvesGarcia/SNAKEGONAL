@@ -14,10 +14,16 @@ body{
     margin-top: calc((100vh - 91.875vmin)/2);
     opacity: 0;
 }
+main{
+    width:100vw;
+    height:100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 canvas{
-    width:98vmin;
-    margin-left: calc((100% - 100vmin)/2);
-    margin-top: calc((100vh - 91.875vmin)/2);
+    position:absolute;
+    height:calc(100vmin*0.7421875);
 }
 #jogar{
     padding-top: 0.5rem;
@@ -30,4 +36,29 @@ canvas{
     font-size: 20px;
     color:white;
     font-weight: bolder;
+    position:absolute;
+    box-shadow: rgba(0,0,0,0.4) 3px 3px;
+    margin-top: 50vmin;
+}
+#jogar:hover{
+    background-color: rgb(207, 0, 0);
+    cursor: pointer;
+}
+#gameOverImg{
+    margin-bottom: 5vmin;
+    width:60vmin;
+    position: absolute;
+    display:none;
+}
+
+#celular1{
+    position:absolute;
+    left:0;
+    height:100vh;
+    /*width:calc(100vw-(100vh*((33/95))));
+    background-color: aqua;*/
+    display:none;
+}
+#divBotao{
+    height: 50vh;
 }

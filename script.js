@@ -3,12 +3,16 @@
 const canvas = document.querySelector("#tela");
 let ctx = canvas.getContext("2d");
 canvas.width = 512
-canvas.height = 412
+canvas.height = 380
 let somQuebrar = document.querySelector("#quebrar");
 let somMusica = document.querySelector("#musica");
 let somPreJogo = document.querySelector("#preJogo");
+let somGameOver = document.querySelector("#gameOver");
+let somPintinho = document.querySelector("#pintinho");
 let logo = document.querySelector("#logo");
 let botao = document.querySelector("#jogar");
+let gameOver = document.querySelector("#gameOverImg");
+let divMain;
 
 //---------------------ENTIDADES--------------------------//
 
@@ -20,6 +24,17 @@ let tela ={
     w:width*16,
     h:height*16,
 }
+
+function ajusteTela (){
+    divMain = document.querySelector("main");
+    if(divMain.clientHeight/divMain.clientWidth < 0.7421875){
+        canvas.style.height = "100vmin";
+    }
+    else{
+        canvas.style.height = "calc(100vmin*0.7421875)";
+    }
+    requestAnimationFrame(ajusteTela);
+}ajusteTela();
 
 // background
 
@@ -302,6 +317,9 @@ function loop () {
 
     //ave
     if(Date.now()-delayAve>=2/17*1000 && ! inicio){
+        if(avsx == 0 && tamanho > 3 && jogo){
+            somPintinho.play();
+        }
         avsx += 480;
         delayAve = Date.now();
     }
@@ -313,9 +331,6 @@ function loop () {
             delayOvo = Date.now();
             if(ovsx!=112){
                 ovsx += 16;
-                if(ovsx==112){
-                    somQuebrar.play();
-                }
             }
         }
     }
@@ -339,7 +354,7 @@ function loopPreJogo (){
     ctx.fillStyle = "rgb(0,0,0)";
     ctx.fillRect(0,28,512,352);
     if(Date.now()-tempoPreJogo < 1700 && Date.now()-tempoPreJogo > 700){
-        ctx.drawImage(gifImg, 0, 0, 32, 32, ((512-64)/2), (28+((352-64)/2)), 64, 64)
+        ctx.drawImage(gifImg, 0, 0, 512, 352, ((512-96)/2), (28+((352-66)/2)), 96, 66)
     }
     if(Date.now()-tempoPreJogo > 1700){
         ctx.drawImage(logoImg, 0, 0, 500, 500, ((512-192)/2), (14+((352-192)/2)), 192, 192)
@@ -363,7 +378,9 @@ function vidaF (){
         if(vida.vw <= 0){
             jogo = false;
             botao.style.display = "block";
-            somMusica.pause();    
+            gameOver.style.display = "block";
+            somMusica.pause();  
+            somGameOver.play();  
         }
     }
 }
@@ -404,14 +421,18 @@ function overflow (xx, yy){
         console.log("Você perdeu!")
         jogo=false;
         botao.style.display = "block";
+        gameOver.style.display = "block";
         somMusica.pause();
+        somGameOver.play();  
     }
     if(jogo){
         body.forEach((item, i)=>{
             if(i!=0 && item.x==xx*16 && item.y==yy*16+variaY){
                 jogo=false;
                 botao.style.display = "block";
+                gameOver.style.display = "block";
                 somMusica.pause();
+                somGameOver.play();  
                 console.log("Você perdeu!");
             }
         });
@@ -551,7 +572,8 @@ botao.addEventListener("click", ()=>{
         }
         clearInterval(intervalCronometro);
         clearInterval(intervalVida);
-        botao.style.display = "none";    
+        botao.style.display = "none";  
+        gameOver.style.display = "none";  
     }
 });
 
