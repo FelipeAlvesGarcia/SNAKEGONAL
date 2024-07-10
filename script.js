@@ -259,6 +259,10 @@ function loop () {
     if(jogo){
         somMusica.play();    
     }  
+    if(cronometro > tempo){
+        reaOvo = true;
+        pegou = false;
+    }
     if(Date.now()-delayJogo>=velocidade*200){
         if(jogo){
             ObterDirecao();    
@@ -278,14 +282,10 @@ function loop () {
         
 
         //pegar ovo
-        if(body[0].x == ovo.x && body[0].y == ovo.y){
+        if(body[0].x == ovo.x && body[0].y == ovo.y && ! reaOvo){
             reaOvo = true;
             pegou = true;
             somQuebrar.play();
-        }
-        if(cronometro > tempo){
-            reaOvo = true;
-            pegou = false;
         }
         if(reaOvo){
             realocarOvo();
@@ -326,7 +326,9 @@ function loop () {
 
     //ovo
     if(tempo-cronometro<2){
-        diferenca = tempo-cronometro;
+        if(diferenca == 0){
+            diferenca = tempo-cronometro;
+        }
         if((Date.now()-delayOvo)>=(diferenca/8)*1000){
             delayOvo = Date.now();
             if(ovsx!=112){
@@ -408,6 +410,7 @@ function calcOvo(){
     tempo = media/(1000/(0.65*200));//1=velocidade
     tempo = tempo*2;
     cronometro = 0;
+    diferenca = 0;
 }
 
 function ale(min, max) {
@@ -477,7 +480,7 @@ function ObterDirecao(){
         direcao = 2;
         velocidade=0.65;
     }
-        loadsnake();       
+    loadsnake();       
 }
 
 function andar(){
