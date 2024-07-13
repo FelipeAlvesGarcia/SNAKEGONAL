@@ -383,6 +383,7 @@ function vidaF (){
             gameOver.style.display = "block";
             somMusica.pause();  
             somGameOver.play();  
+            //canvas.exitFullscreen();
         }
     }
 }
@@ -427,6 +428,7 @@ function overflow (xx, yy){
         gameOver.style.display = "block";
         somMusica.pause();
         somGameOver.play();  
+        //canvas.exitFullscreen();
     }
     if(jogo){
         body.forEach((item, i)=>{
@@ -437,6 +439,7 @@ function overflow (xx, yy){
                 somMusica.pause();
                 somGameOver.play();  
                 console.log("Você perdeu!");
+                //canvas.exitFullscreen();
             }
         });
     }
@@ -533,8 +536,10 @@ botao.addEventListener("click", ()=>{
         loopPreJogo();
         botao.style.display = "none";  
         botao.innerText = "Jogar Novamente";  
+        canvas.requestFullscreen();
     }
     else{
+        canvas.requestFullscreen();
         reaOvo = false;
         pegou = true;
         inicio = true;
@@ -617,7 +622,6 @@ const minimoDeslocamento = 10;
 let deltaX, deltaY;
 let a;
 function direcaoCelular(){
-    //canvas.requestFullscreen();
     if( ! preJogo && inicio){
         jogo = true;
         inicio = false;
@@ -634,10 +638,10 @@ function direcaoCelular(){
         // EX EY 1 EX EY
         // X  Y  1 X  Y 
         a = deltaY / deltaX;
-        console.log("a = "+a)
+        //console.log("a = "+a)
         if(deltaX == 0 || deltaY == 0){
             if(deltaX == 0){
-                (deltaY > 0) ? {} : direcao = 3;
+                (deltaY > 0) ? direcao = 1 : direcao = 3;
             }
             else if(deltaY == 0){
                 (deltaX > 0) ? direcao = 4 : direcao = 2;
@@ -658,7 +662,7 @@ function direcaoCelular(){
             }   
         }
     }
-    console.log(direcao);
+    //console.log(direcao);
 }
 
 //PC
