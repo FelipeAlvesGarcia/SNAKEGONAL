@@ -237,11 +237,11 @@ function loadScore (){
     else if(tamanho-3<100){
         pontos += "0";
     }
-    pontos += tamanho-3
+    pontos += tamanho-3;
     ctx.font = score.font;
-    ctx.fillStyle = "rgba(255, 255, 255, 0.5)"
-    ctx.fillText(pontos, score.nx, score.ny)
-    pontos = ""
+    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+    ctx.fillText(pontos, score.nx, score.ny);
+    pontos = "";
 }
 
 //---------------------LOAD--------------------------//
@@ -586,6 +586,75 @@ let keys = {
     ArrowRight:false,
     ArrowDown:false,
 }
+
+//celular
+let startDedoX, startDedoY;
+divMain.addEventListener('touchstart', (event) =>{
+    startDedoX = event.touches[0].clientX;
+    startDedoY = event.touches[0].clientY;
+    //console.log("\nSX -> "+startDedoX);
+    //console.log("SY -> "+startDedoY);
+});
+
+let endDedoX, endDedoY;
+/*divMain.addEventListener('touchmove', (event) =>{
+    endDedoX = event.changedTouches[0].clientX;
+    endDedoY = event.changedTouches[0].clientY;
+    console.log("MEX -> "+endDedoX);
+    console.log("MEY -> "+endDedoY);
+    direcaoCelular();
+});*/
+
+divMain.addEventListener('touchend', (event) =>{
+    endDedoX = event.changedTouches[0].clientX;
+    endDedoY = event.changedTouches[0].clientY;
+    //console.log("EX -> "+endDedoX);
+    //console.log("EY -> "+endDedoY);
+    direcaoCelular();
+});
+
+const minimoDeslocamento = 10;
+let deltaX, deltaY;
+let a;
+function direcaoCelular(){
+    deltaX = endDedoX - startDedoX;
+    deltaY = endDedoY - startDedoY;
+    deltaY = -1*deltaY;
+    //console.log("DX = "+deltaX);
+    //console.log("DY = "+deltaY);
+    if((deltaX >= minimoDeslocamento || deltaX <= -minimoDeslocamento) || (deltaY >= minimoDeslocamento || deltaY <= -minimoDeslocamento)){
+        // SX SY 1 SX SY
+        // EX EY 1 EX EY
+        // X  Y  1 X  Y 
+        a = deltaY / deltaX;
+        console.log("a = "+a)
+        if(deltaX == 0 || deltaY == 0){
+            if(deltaX == 0){
+                (deltaY > 0) ? direcao = 1 : direcao = 3;
+            }
+            else if(deltaY == 0){
+                (deltaX > 0) ? direcao = 4 : direcao = 2;
+            }    
+        }
+        else{
+            if(a > 0.4040 && a <= 4.3315){
+                (deltaY > 0) ? direcao = 5 : direcao = 7;
+            }
+            else if(a < -0.4040 && a >= -4.3315){
+                (deltaY > 0) ? direcao = 6 : direcao = 8;
+            }
+            else if(a <= 0.4040 && a >= -0.4040){
+                (deltaX > 0) ? direcao = 4 : direcao = 2;
+            }
+            else if(a > 4.3315 || a < -4.3315){
+                (deltaY > 0) ? direcao = 1 : direcao = 3;
+            }   
+        }
+    }
+    console.log(direcao);
+}
+
+//PC
 
 let intervalCronometro;
 let intervalVida;

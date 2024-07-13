@@ -50,15 +50,3 @@ canvas{
     position: absolute;
     display:none;
 }
-
-#celular1{
-    position:absolute;
-    left:0;
-    height:100vh;
-    /*width:calc(100vw-(100vh*((33/95))));
-    background-color: aqua;*/
-    display:none;
-}
-#divBotao{
-    height: 50vh;
-}
