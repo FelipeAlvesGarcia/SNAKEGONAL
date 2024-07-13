@@ -617,6 +617,13 @@ const minimoDeslocamento = 10;
 let deltaX, deltaY;
 let a;
 function direcaoCelular(){
+    //canvas.requestFullscreen();
+    if( ! preJogo && inicio){
+        jogo = true;
+        inicio = false;
+        intervalVida = setInterval(vidaF, 1000);
+        intervalCronometro = setInterval(function(){cronometro += 0.125}, 125);
+    }
     deltaX = endDedoX - startDedoX;
     deltaY = endDedoY - startDedoY;
     deltaY = -1*deltaY;
@@ -630,7 +637,7 @@ function direcaoCelular(){
         console.log("a = "+a)
         if(deltaX == 0 || deltaY == 0){
             if(deltaX == 0){
-                (deltaY > 0) ? direcao = 1 : direcao = 3;
+                (deltaY > 0) ? {} : direcao = 3;
             }
             else if(deltaY == 0){
                 (deltaX > 0) ? direcao = 4 : direcao = 2;
