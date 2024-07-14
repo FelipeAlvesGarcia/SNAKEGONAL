@@ -11,7 +11,6 @@ let somGameOver = document.querySelector("#gameOver");
 let somPintinho = document.querySelector("#pintinho");
 let logo = document.querySelector("#logo");
 let botao = document.querySelector("#jogar");
-let gameOver = document.querySelector("#gameOverImg");
 let divMain;
 
 //---------------------ENTIDADES--------------------------//
@@ -224,24 +223,44 @@ function loadVida(){
 
 //score
 
-let pontos = "";
+let scoreImg = new Image();
+scoreImg.src = "img/numeros.png";
+let unidade = 0, dezena = 0, centena = 0;
 let score = {
-    nx:440,
-    ny:72,
-    font:"32px serif"
+    sx:32,
+    sy:0,
+    sw:32,
+    sh:32,
+    x:440,
+    y:50,
+    w:16,
+    h:16,
 }
 function loadScore (){
-    if(tamanho-3<10){
-        pontos += "00";
+    if(unidade != 0 && unidade % 10 == 0){
+        dezena++;
     }
-    else if(tamanho-3<100){
-        pontos += "0";
+    if(dezena != 0 && dezena % 10 == 0){
+        centena++;
     }
-    pontos += tamanho-3;
-    ctx.font = score.font;
-    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-    ctx.fillText(pontos, score.nx, score.ny);
-    pontos = "";
+    (unidade >= 10) ? unidade = 0 : unidade = unidade;
+    (dezena >= 10) ? dezena = 0 : dezena = dezena;
+    (centena >= 10) ? centena = 0 : centena = centena;
+
+    ctx.globalAlpha = 0.6;
+    ctx.drawImage(scoreImg, score.sx*unidade, score.sy, score.sw, score.sh, score.x+(score.w*2), score.y, score.w, score.h);
+    ctx.drawImage(scoreImg, score.sx*dezena, score.sy, score.sw, score.sh, score.x+(score.w), score.y, score.w, score.h);
+    ctx.drawImage(scoreImg, score.sx*centena, score.sy, score.sw, score.sh, score.x, score.y, score.w, score.h);
+    ctx.globalAlpha = 1;
+}
+
+//gameOver
+
+let gameOverStatus = false;
+let gameOverImg = new Image();
+gameOverImg.src = "img/gameOver.png";
+function loadGameOver(){
+    ctx.drawImage(gameOverImg, 0, 0, 1584, 1188, (512-280)/2, (380-210)/2-30, 280, 210);
 }
 
 //---------------------LOAD--------------------------//
@@ -305,7 +324,8 @@ function loop () {
                 else{
                     vida.vw = vida.w-2;
                 }
-                tamanho++;    
+                tamanho++;  
+                unidade++;  
                 console.log(" - Pontuação: "+(tamanho-3))    
             }
         }
@@ -316,7 +336,7 @@ function loop () {
     }
 
     //ave
-    if(Date.now()-delayAve>=2/17*1000 && ! inicio){
+    if(Date.now()-delayAve>=2/17*1000){
         if(avsx == 0 && tamanho > 3 && jogo){
             somPintinho.play();
         }
@@ -336,8 +356,9 @@ function loop () {
             }
         }
     }
-    //gameOver
-    
+    if(gameOverStatus){
+        loadGameOver();
+    }
     requestAnimationFrame(loop);     
 }
 
@@ -362,7 +383,6 @@ function loopPreJogo (){
         ctx.drawImage(logoImg, 0, 0, 500, 500, ((512-192)/2), (14+((352-192)/2)), 192, 192)
     }
     if(Date.now()-tempoPreJogo > 3000){
-        logo.style.opacity = "0.35";
         loop();
         preJogo = false;
         tempoPreJogo = 0;
@@ -378,14 +398,18 @@ function vidaF (){
     if(jogo && vida.vw>0){
         vida.vw -= (vida.w-2)/20;
         if(vida.vw <= 0){
-            jogo = false;
-            botao.style.display = "block";
-            gameOver.style.display = "block";
-            somMusica.pause();  
-            somGameOver.play();  
-            //canvas.exitFullscreen();
+           gameOver();
         }
     }
+}
+
+function gameOver (){
+    console.log("Você perdeu!")
+    jogo = false;
+    botao.style.display = "block";
+    somMusica.pause();  
+    somGameOver.play();  
+    gameOverStatus = true;
 }
 
 function realocarOvo(){
@@ -422,24 +446,12 @@ function ale(min, max) {
 
 function overflow (xx, yy){
     if(xx-1<0 || xx-1>(width-1) || yy-1<0 || yy-1>(height-1)){
-        console.log("Você perdeu!")
-        jogo=false;
-        botao.style.display = "block";
-        gameOver.style.display = "block";
-        somMusica.pause();
-        somGameOver.play();  
-        //canvas.exitFullscreen();
+        gameOver();
     }
     if(jogo){
         body.forEach((item, i)=>{
             if(i!=0 && item.x==xx*16 && item.y==yy*16+variaY){
-                jogo=false;
-                botao.style.display = "block";
-                gameOver.style.display = "block";
-                somMusica.pause();
-                somGameOver.play();  
-                console.log("Você perdeu!");
-                //canvas.exitFullscreen();
+                gameOver();
             }
         });
     }
@@ -530,16 +542,19 @@ function andar(){
 //---------------------KEYS--------------------------//
 
 botao.addEventListener("click", ()=>{
+    divMain.requestFullscreen();
     if(preJogo){
         somPreJogo.play();
         tempoPreJogo = Date.now();
         loopPreJogo();
         botao.style.display = "none";  
         botao.innerText = "Jogar Novamente";  
-        canvas.requestFullscreen();
     }
     else{
-        canvas.requestFullscreen();
+        unidade = 0;
+        dezena = 0;
+        centena = 0;
+        gameOverStatus = false;
         reaOvo = false;
         pegou = true;
         inicio = true;
@@ -581,7 +596,6 @@ botao.addEventListener("click", ()=>{
         clearInterval(intervalCronometro);
         clearInterval(intervalVida);
         botao.style.display = "none";  
-        gameOver.style.display = "none";  
     }
 });
 
@@ -622,12 +636,6 @@ const minimoDeslocamento = 10;
 let deltaX, deltaY;
 let a;
 function direcaoCelular(){
-    if( ! preJogo && inicio){
-        jogo = true;
-        inicio = false;
-        intervalVida = setInterval(vidaF, 1000);
-        intervalCronometro = setInterval(function(){cronometro += 0.125}, 125);
-    }
     deltaX = endDedoX - startDedoX;
     deltaY = endDedoY - startDedoY;
     deltaY = -1*deltaY;
@@ -641,28 +649,40 @@ function direcaoCelular(){
         //console.log("a = "+a)
         if(deltaX == 0 || deltaY == 0){
             if(deltaX == 0){
-                (deltaY > 0) ? direcao = 1 : direcao = 3;
+                if(deltaY > 0){if(direcao!=3){direcao=1}} else{if(direcao!=1){direcao=3}};
             }
             else if(deltaY == 0){
-                (deltaX > 0) ? direcao = 4 : direcao = 2;
+                if(deltaX > 0){if(direcao!=2){direcao=4}} else{if(direcao!=4){direcao=2}};
             }    
         }
         else{
             if(a > 0.4040 && a <= 4.3315){
-                (deltaY > 0) ? direcao = 5 : direcao = 7;
+                //console.log("eixo +XY");
+                if(deltaY > 0){if(direcao!=7){direcao=5;velocidade=1}} else{if(direcao!=5){direcao=7;velocidade=1}};
             }
             else if(a < -0.4040 && a >= -4.3315){
-                (deltaY > 0) ? direcao = 6 : direcao = 8;
+                //console.log("eixo -XY");
+                if(deltaY > 0){if(direcao!=8){direcao=6;velocidade=1}} else{if(direcao!=6){direcao=8;velocidade=1}};
             }
             else if(a <= 0.4040 && a >= -0.4040){
-                (deltaX > 0) ? direcao = 4 : direcao = 2;
+                //console.log("eixo X");
+                if(deltaX > 0){if(direcao!=2){direcao=4;velocidade=0.65}} else{if(direcao!=4){direcao=2;velocidade=0.65}};
             }
             else if(a > 4.3315 || a < -4.3315){
-                (deltaY > 0) ? direcao = 1 : direcao = 3;
+                //console.log("eixo Y");
+                if(deltaY > 0){if(direcao!=3){direcao=1;velocidade=0.65}} else{if(direcao!=1 && direcao!=0){direcao=3;velocidade=0.65}};
             }   
         }
     }
+    if( ! preJogo && inicio && direcao != 0){
+        console.log("começou");
+        jogo = true;
+        inicio = false;
+        intervalVida = setInterval(vidaF, 1000);
+        intervalCronometro = setInterval(function(){cronometro += 0.125}, 125);
+    }
     //console.log(direcao);
+    //console.log(velocidade);
 }
 
 //PC
@@ -673,6 +693,7 @@ window.addEventListener('keydown', (event)=>{
     if(event.key=='ArrowUp' && (event.key!='ArrowRight' || event.key!='ArrowLeft')){
         keys.ArrowUp = true;
         if( ! preJogo && inicio){
+            console.log("começou");
             jogo = true;
             inicio = false;
             intervalVida = setInterval(vidaF, 1000);
@@ -681,16 +702,11 @@ window.addEventListener('keydown', (event)=>{
     }
     else if(event.key=='ArrowDown' && (event.key!='ArrowRight' || event.key!='ArrowLeft') && jogo==true){
         keys.ArrowDown = true;
-        if( ! preJogo  && inicio){
-            inicio = false;
-            jogo = true;
-            intervalVida = setInterval(vidaF, 1000);
-            intervalCronometro = setInterval(function(){cronometro += 0.125}, 125);
-        }
     }
     else if(event.key=='ArrowLeft' && (event.key!='ArrowUp' || event.key!='ArrowDown')){
         keys.ArrowLeft = true;
         if( ! preJogo && inicio){
+            console.log("começou");
             inicio = false;
             jogo = true;
             intervalVida = setInterval(vidaF, 1000);
@@ -700,6 +716,7 @@ window.addEventListener('keydown', (event)=>{
     else if(event.key=='ArrowRight' && (event.key!='ArrowUp' || event.key!='ArrowDown')){
         keys.ArrowRight = true;
         if( ! preJogo && inicio){
+            console.log("começou");
             inicio = false;
             jogo = true;
             intervalVida = setInterval(vidaF, 1000);
