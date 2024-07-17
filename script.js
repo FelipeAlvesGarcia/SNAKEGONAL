@@ -60,6 +60,8 @@ function loadbg(){
         w:tela.w,
         h:tela.h
     }
+    ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fillRect(0,0,512,380);
     ctx.drawImage(map, bg2.sx, bg2.sy, bg2.sw, bg2.sh, bg2.x, bg2.y, bg2.w, bg2.h)  
 }
 
@@ -224,10 +226,10 @@ let score = {
     sy:0,
     sw:32,
     sh:32,
-    x:440,
-    y:50,
-    w:16,
-    h:16,
+    x:396,
+    y:48,
+    w:32,
+    h:32,
 }
 function loadScore (){
     if(unidade != 0 && unidade % 10 == 0){
@@ -364,7 +366,7 @@ gifImg.src = "./img/gif.png";
 
 loadVida();
 ctx.fillStyle = "rgb(0,0,0)";
-ctx.fillRect(0,28,512,352);
+ctx.fillRect(0,0,512,380);
 function loopPreJogo (){
     loadVida();
     ctx.fillStyle = "rgb(0,0,0)";
@@ -534,6 +536,19 @@ function andar(){
 }
 
 //---------------------KEYS--------------------------//
+
+/*let iphone;
+iphone = setInterval(()=>{
+    clearInterval(iphone);
+    //divMain.requestFullscreen();
+    if(preJogo){
+        //somPreJogo.play();
+        tempoPreJogo = Date.now();
+        loopPreJogo();
+        botao.style.display = "none";  
+        botao.innerText = "Jogar Novamente";  
+    }
+}, 5000);*/
 
 botao.addEventListener("click", ()=>{
     divMain.requestFullscreen();
