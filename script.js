@@ -60,8 +60,6 @@ function loadbg(){
         w:tela.w,
         h:tela.h
     }
-    ctx.fillStyle = "#343434"
-    ctx.fillRect(bg.x, bg.y, bg.w, bg.h)
     ctx.drawImage(map, bg2.sx, bg2.sy, bg2.sw, bg2.sh, bg2.x, bg2.y, bg2.w, bg2.h)  
 }
 
@@ -197,28 +195,23 @@ function loadAve (){
 
 //vida
 
+let vidaImg = new Image();
+vidaImg.src = "img/vida.png";
+let visy = 0;
 let vida;
 vida = {
+    sx:0,
+    sy:24*visy,
+    sw:512,
+    sh:24,
     x:0,
     y:2,
     w:512,
     h:24,
-    vx:1,
-    vy:3,
-    vw:510,
-    vh:22,
-    fvx:1,
-    fvy:3,
-    fvw:510,
-    fvh:22
 }
 function loadVida(){
-    ctx.fillStyle = "rgb(0,0,0)";
-    ctx.fillRect(vida.x, vida.y, vida.w, vida.h);
-    ctx.fillStyle = "rgb(255,0,0)";
-    ctx.fillRect(vida.fvx, vida.fvy, vida.fvw, vida.fvh)
-    ctx.fillStyle = "rgb(0,150,10)";
-    ctx.fillRect(vida.vx, vida.vy, vida.vw, vida.vh)
+    vida.sy = 24*visy;
+    ctx.drawImage(vidaImg, vida.sx, vida.sy, vida.sw, vida.sh, vida.x, vida.y, vida.w, vida.h)
 }
 
 //score
@@ -318,11 +311,11 @@ function loop () {
             reaOvo = false;
             ovsx = 0;
             if(pegou){
-                if(vida.vw < (vida.w-2)*3/4){
-                    vida.vw += (vida.w-2)/4;
+                if(visy >= 5){
+                    visy -= 5;
                 }
                 else{
-                    vida.vw = vida.w-2;
+                    visy = 0;
                 }
                 tamanho++;  
                 unidade++;  
@@ -395,12 +388,13 @@ function loopPreJogo (){
 //---------------------FUNÇÕES--------------------------//
 
 function vidaF (){
-    if(jogo && vida.vw>0){
-        vida.vw -= (vida.w-2)/20;
-        if(vida.vw <= 0){
-           gameOver();
+    if(jogo && visy <= 20){
+        visy++;
+        if(visy == 20){
+            gameOver();
         }
     }
+    
 }
 
 function gameOver (){
@@ -560,20 +554,7 @@ botao.addEventListener("click", ()=>{
         inicio = true;
         direcao = 0;
         ovsx = 0;
-        vida = {
-            x:0,
-            y:2,
-            w:512,
-            h:24,
-            vx:1,
-            vy:3,
-            vw:510,
-            vh:22,
-            fvx:1,
-            fvy:3,
-            fvw:510,
-            fvh:22
-        }
+        visy = 0;
         tamanho = 3;
         xx = 5;
         yy = 12;
