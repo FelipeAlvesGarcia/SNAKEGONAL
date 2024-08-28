@@ -261,7 +261,7 @@ function loadGameOver(){
 //---------------------LOAD--------------------------//
 
 let tempo, media, mx, my, cronometro, diferenca;
-let reaOvo = false, pegou = true;
+let reaOvo = false, pegou = false, diagonal = false;
 let jogo = false;
 let inicio = true;
 let delayJogo = Date.now();
@@ -298,16 +298,26 @@ function loop () {
         //pegar ovo
         if(body[0].x == ovo.x && body[0].y == ovo.y && ! reaOvo){
             reaOvo = true;
-            pegou = true;
+            if(direcao <= 4){
+                console.log(direcao)
+                pegou = true;
+            }
+            else{
+                diagonal = true;
+            }
             somQuebrar.play();
         }
         if(reaOvo){
             realocarOvo();
+            console.log(diagonal)
             if(!pegou){
                 ovoX = ovo.x;
                 ovoY = ovo.y;
-                avsx = 0;
+                if(!diagonal){
+                    avsx = 0;
+                }
             }
+            diagonal = false;
             loadOvo();
             calcOvo();
             reaOvo = false;
@@ -323,6 +333,7 @@ function loop () {
                 unidade++;  
                 console.log(" - Pontuação: "+(tamanho-3))    
             }
+            pegou = false;
         }
         loadMuro();
         loadAve();
@@ -390,7 +401,7 @@ function loopPreJogo (){
 //---------------------FUNÇÕES--------------------------//
 
 function vidaF (){
-    if(jogo && visy <= 20){
+    if(jogo && visy <= 20 && direcao >= 1 && direcao <= 4){
         visy++;
         if(visy == 20){
             gameOver();
