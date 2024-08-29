@@ -46,7 +46,7 @@ canvas{
 
 
 #controles{
-    display:none;
+    /*display:none;*/
     position: absolute;
     bottom: 3%;
     right: 3%;
@@ -73,4 +73,22 @@ canvas{
 .hc:hover{
     opacity: 0.2;
     cursor: pointer;
+}
+
+#menuDificuldade{
+    top: 15%;
+}
+.dificuldade{
+    color:white;
+    font-size: 1.5rem;
+    font-weight: bolder;
+    text-align: center;
+}
+.alternativa{
+    padding: 2rem;  
+    padding-top:0.75rem;
+    padding-bottom: 0.75rem;
+    display: inline;
+    background-color: white;
+    border-radius: 10px;
 }
